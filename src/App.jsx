@@ -6,21 +6,24 @@ import AdminDashboard from "./pages/AdminDashboard";
 import UserManagement from "./pages/UserManagement";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-import PrivateRoute from "./components/PrivateRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        
-        {/* Halaman Admin */}
-        <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
-        <Route path="/user-management" element={<PrivateRoute><UserManagement /></PrivateRoute>} />
-        <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
-        <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+
+        {/* Protected Admin Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/reports" element={<Reports />} />
+          <Route path="/admin/settings" element={<Settings />} />
+        </Route>
       </Routes>
     </Router>
   );

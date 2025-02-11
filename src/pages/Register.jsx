@@ -1,31 +1,70 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 function Register() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+
+    const { user, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      setError(error.message);
+    } else {
+      setMessage("Check your email for confirmation!");
+      setTimeout(() => navigate("/"), 2000);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
-        <h2 className="text-2xl font-bold text-center">Register</h2>
-        <form className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium">Full Name</label>
-            <input type="text" className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your name" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Email</label>
-            <input type="email" className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Password</label>
-            <input type="password" className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your password" />
-          </div>
-          <button type="submit" className="w-full px-3 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">Register</button>
-        </form>
-        <p className="text-sm text-center">
-          Already have an account? <Link to="/" className="text-blue-500 hover:underline">Login</Link>
-        </p>
+    <div style={styles.container}>
+      <h2>Register</h2>
+      {error && <p style={styles.error}>{error}</p>}
+      {message && <p style={styles.success}>{message}</p>}
+      <form onSubmit={handleRegister} style={styles.form}>
+        <input 
+          type="email" 
+          placeholder="Email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          required 
+          style={styles.input}
+        />
+        <input 
+          type="password" 
+          placeholder="Password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          required 
+          style={styles.input}
+        />
+        <button type="submit" style={styles.button}>Register</button>
+      </form>
+
+      <div style={styles.links}>
+        <button onClick={() => navigate("/")} style={styles.linkButton}>Back to Login</button>
       </div>
     </div>
   );
 }
+
+const styles = {
+  container: { maxWidth: "400px", margin: "0 auto", padding: "20px", textAlign: "center" },
+  form: { display: "flex", flexDirection: "column", gap: "10px" },
+  input: { padding: "10px", fontSize: "16px", width: "100%" },
+  button: { padding: "10px", fontSize: "16px", cursor: "pointer", backgroundColor: "#28a745", color: "#fff", border: "none" },
+  error: { color: "red" },
+  success: { color: "green" },
+  links: { marginTop: "10px" },
+  linkButton: { background: "none", border: "none", color: "#007bff", cursor: "pointer" }
+};
 
 export default Register;
