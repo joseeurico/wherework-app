@@ -12,12 +12,25 @@ function Login() {
     e.preventDefault();
     setError("");
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    // Login pakai email & password
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setError(error.message);
-    } else {
-      navigate("/admin-dashboard");
+      return;
+    }
+
+    // Ambil user setelah login
+    const { user } = data;
+    if (user) {
+      const role = user.user_metadata?.role;
+
+      // Cek role dan redirect
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
     }
   };
 
@@ -44,7 +57,7 @@ function Login() {
         />
         <button type="submit" style={styles.button}>Login</button>
       </form>
-      
+
       <div style={styles.links}>
         <button onClick={() => navigate("/register")} style={styles.linkButton}>Register</button>
         <button onClick={() => navigate("/forgot-password")} style={styles.linkButton}>Forgot Password?</button>

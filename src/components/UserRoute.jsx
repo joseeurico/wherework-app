@@ -1,11 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import { useEffect, useState } from "react";
 
-function ProtectedRoute({ role }) {
+function UserRoute() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -17,9 +16,8 @@ function ProtectedRoute({ role }) {
         return;
       }
 
-      if (data.user) {
+      if (data.user && data.user.user_metadata?.role === "user") {
         setUser(data.user);
-        setUserRole(data.user.user_metadata?.role || "");
       }
 
       setLoading(false);
@@ -29,9 +27,9 @@ function ProtectedRoute({ role }) {
   }, []);
 
   if (loading) return <p>Loading...</p>;
-  if (!user || userRole !== role) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/" replace />;
 
   return <Outlet />;
 }
 
-export default ProtectedRoute;
+export default UserRoute;
