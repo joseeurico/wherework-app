@@ -6,7 +6,7 @@ const Reports = () => {
     <div>
       <h2>Laporan</h2>
       <p>Halaman ini akan menampilkan laporan pengguna.</p>
-      <Link to="/admin-dashboard">
+      <Link to="/admin/dashboard">
         <button>Kembali ke Dashboard</button>
       </Link>
     </div>

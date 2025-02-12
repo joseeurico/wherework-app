@@ -8,6 +8,9 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import UserDashboard from "./pages/UserDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserProfile from "./pages/UserProfile";
+import UserReports from "./pages/UserReport";
+import UserSettings from "./pages/UserSettings";
 
 function App() {
   return (
@@ -28,8 +31,11 @@ function App() {
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute role="user" />}>
-          <Route path="/user/dashboard" element={<UserDashboard />} />
-        </Route>
+        <Route path="/user/dashboard" element={<UserDashboard />} />
+        <Route path="/user/profile" element={<UserProfile />} />
+        <Route path="/user/settings" element={<UserSettings />} />
+        <Route path="/user/reports" element={<UserReports />} />
+      </Route>
       </Routes>
     </Router>
   );

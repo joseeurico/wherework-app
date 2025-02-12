@@ -8,26 +8,68 @@ function Register() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const validatePassword = (password) => {
+    const minLength = password.length >= 8;
+    const hasNumber = /\d/.test(password);
+    const hasUpperCase = /[A-Z]/.test(password);
+    
+    return minLength && hasNumber && hasUpperCase;
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-
+  
+    if (!validatePassword(password)) {
+      setError("Password harus minimal 8 karakter, mengandung angka, dan huruf besar.");
+      return;
+    }
+  
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { role: "user" }, // ✅ FIX: Tambah koma
-        email_confirm: true, // ✅ Auto-confirm email
+        data: { role: "user" }, 
+        email_confirm: true,
       },
     });
-
+  
+    console.log("signUp Response:", data, error); // 🔍 DEBUG 
+  
     if (error) {
       setError(error.message);
+      alert(`Registrasi gagal: ${error.message}`); // ✅ Alert kalau gagal
     } else {
+      alert("Registrasi berhasil! Silakan login."); // ✅ Alert sukses
       console.log("User registered:", data);
-      navigate("/"); // Redirect ke login setelah daftar
+      navigate("/");
     }
+  
+    if (!data?.user) {
+      setError("Registrasi gagal, coba lagi.");
+      return;
+    }
+  
+    // Insert user ke table profile
+    const { error: dbError } = await supabase.from("profiles").insert([
+      {
+        id: data.user.id, // Pakai ID dari Supabase Auth
+        email: data.user.email,
+        role: "user",
+      }
+    ]);
+  
+    console.log("Insert to profile Response:", dbError); // 🔍 DEBUG
+  
+    if (dbError) {
+      setError(dbError.message);
+      return;
+    }
+  
+    console.log("User registered & added to DB:", data);
+    navigate("/"); // Redirect ke login
   };
+  
 
   return (
     <div style={styles.container}>

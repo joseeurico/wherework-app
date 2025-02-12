@@ -6,7 +6,7 @@ const Settings = () => {
     <div>
       <h2>Pengaturan</h2>
       <p>Atur preferensi dan konfigurasi aplikasi di sini.</p>
-      <Link to="/admin-dashboard">
+      <Link to="/admin/dashboard">
         <button>Kembali ke Dashboard</button>
       </Link>
     </div>

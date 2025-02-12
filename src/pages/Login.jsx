@@ -60,7 +60,7 @@ function Login() {
 
       <div style={styles.links}>
         <button onClick={() => navigate("/register")} style={styles.linkButton}>Register</button>
-        <button onClick={() => navigate("/forgot-password")} style={styles.linkButton}>Forgot Password?</button>
+        <button onClick={() => navigate("/forgot/password")} style={styles.linkButton}>Forgot Password?</button>
       </div>
     </div>
   );

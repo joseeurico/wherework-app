@@ -22,25 +22,48 @@ function UserDashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.clear();  // Hapus session dari localStorage
     navigate("/");
   };
 
-  const styles = {
-    container: { maxWidth: "400px", margin: "0 auto", padding: "20px", textAlign: "center" },
-    button: { padding: "10px", fontSize: "16px", cursor: "pointer", backgroundColor: "#dc3545", color: "#fff", border: "none", marginTop: "10px" }
-  };
-
   return (
-    <div style={styles.container}>
+    <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto" }}>
       <h2>User Dashboard</h2>
-      {user ? (
-        <>
-          <p>Welcome, {user.email}</p>
-          <button onClick={handleLogout} style={styles.button}>Logout</button>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
+      {user ? <p>Welcome, {user.email}</p> : <p>Loading...</p>}
+
+      <ul style={{ listStyleType: "none", padding: 0 }}>
+        <li style={{ marginBottom: "10px" }}>
+          <button 
+            onClick={() => navigate("/user/profile")} 
+            style={{ width: "100%", padding: "10px", cursor: "pointer" }}
+          >
+            🧑 Profile
+          </button>
+        </li>
+        <li style={{ marginBottom: "10px" }}>
+          <button 
+            onClick={() => navigate("/user/settings")} 
+            style={{ width: "100%", padding: "10px", cursor: "pointer" }}
+          >
+            ⚙️ Settings
+          </button>
+        </li>
+        <li style={{ marginBottom: "10px" }}>
+          <button 
+            onClick={() => navigate("/user/reports")} 
+            style={{ width: "100%", padding: "10px", cursor: "pointer" }}
+          >
+            📊 Reports
+          </button>
+        </li>
+      </ul>
+
+      <button 
+        onClick={handleLogout} 
+        style={{ width: "100%", padding: "10px", cursor: "pointer", backgroundColor: "red", color: "white" }}
+      >
+        🚪 Logout
+      </button>
     </div>
   );
 }

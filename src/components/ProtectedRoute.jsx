@@ -1,35 +1,31 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 
 function ProtectedRoute({ role }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
+  const location = useLocation(); // Detect perubahan route
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-
-      if (error) {
-        console.error("Error fetching user:", error.message);
-        setLoading(false);
-        return;
-      }
-
-      if (data.user) {
-        setUser(data.user);
-        setUserRole(data.user.user_metadata?.role || "");
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      
+      if (data?.session) {
+        const userData = data.session.user;
+        if (userData?.user_metadata?.role === role) {
+          setUser(userData);
+        }
       }
 
       setLoading(false);
     };
 
-    fetchUser();
-  }, []);
+    checkUser();
+  }, [location.pathname]); // Cek ulang setiap kali route berubah
 
   if (loading) return <p>Loading...</p>;
-  if (!user || userRole !== role) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/" replace={true} />;
 
   return <Outlet />;
 }
